@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imgArrow"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/ic_arrow_top"
+        app:layout_constraintBottom_toBottomOf="@+id/customLoading"
+        app:layout_constraintEnd_toEndOf="@+id/customLoading"
+        app:layout_constraintStart_toStartOf="@+id/customLoading"
+        app:layout_constraintTop_toTopOf="@+id/customLoading" />
+
+    <com.side.project.customrecyclerview.customView.XRecyclerViewLoading
+        android:id="@+id/customLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:chainUseRtl="true"
+        app:layout_constraintBottom_toBottomOf="@+id/tvState"
+        app:layout_constraintEnd_toStartOf="@+id/tvState"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvState" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/customLoading"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="放開加載" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
