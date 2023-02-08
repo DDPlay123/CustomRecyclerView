@@ -26,19 +26,19 @@ class MainActivity : AppCompatActivity(), OnItemClickListener, XRecyclerView.XRe
 
         list = java.util.ArrayList()
         for (i in 0..9) {
-            list.add("leefeng.me$i")
+            list.add("me$i")
         }
 
         binding.apply {
-            recycleview.setLoadMore(true)
-            recycleview.setRefresh(true)
-            recycleview.setAutoLoadMore(true)
-            recycleview.setOnItemClickListener(this@MainActivity)
-            recycleview.setXRecyclerViewListener(this@MainActivity)
-            recycleview.setScrollChangeListener(this@MainActivity)
-            recycleview.itemAnimator = DefaultItemAnimator()
+            recycleView.setLoadMore(true)
+            recycleView.setRefresh(true)
+            recycleView.setAutoLoadMore(true)
+            recycleView.setOnItemClickListener(this@MainActivity)
+            recycleView.setXRecyclerViewListener(this@MainActivity)
+            recycleView.setScrollChangeListener(this@MainActivity)
+            recycleView.itemAnimator = DefaultItemAnimator()
             mainAdapter = MainAdapter(list)
-            recycleview.adapter = mainAdapter
+            recycleView.adapter = mainAdapter
         }
     }
 
@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity(), OnItemClickListener, XRecyclerView.XRe
         Handler().postDelayed({
             b = !b
             list.add(0, "leefeng.me" + "==onRefresh")
-            binding.recycleview.stopRefresh(b)
+            binding.recycleView.stopRefresh(b)
             mainAdapter.notifyItemInserted(0)
             mainAdapter.notifyItemRangeChanged(0, list.size)
         }, 2000)
@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity(), OnItemClickListener, XRecyclerView.XRe
 
     override fun onLoadMore() {
         Handler().postDelayed({
-            binding.recycleview.stopLoadMore()
+            binding.recycleView.stopLoadMore()
             list.add(list.size, "leefeng.me" + "==onLoadMore")
             mainAdapter.notifyItemRangeInserted(list.size - 1, 1)
         }, 2000)

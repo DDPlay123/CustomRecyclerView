@@ -6,57 +6,69 @@
     android:layout_height="wrap_content"
     android:padding="10dp">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/imgArrow"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:background="@drawable/ic_arrow_bottom"
-        app:layout_constraintBottom_toBottomOf="@+id/customLoading"
-        app:layout_constraintEnd_toEndOf="@+id/customLoading"
-        app:layout_constraintStart_toStartOf="@+id/customLoading"
-        app:layout_constraintTop_toTopOf="@+id/customLoading" />
-
-    <com.side.project.customrecyclerview.customView.XRecyclerViewLoading
-        android:id="@+id/customLoading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:chainUseRtl="true"
-        app:layout_constraintBottom_toBottomOf="@+id/group"
-        app:layout_constraintEnd_toStartOf="@+id/group"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/group" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+    <RelativeLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/customLoading"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvState"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgArrow"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_arrow_bottom"
+            app:layout_constraintBottom_toBottomOf="@+id/customLoading"
+            app:layout_constraintEnd_toEndOf="@+id/customLoading"
+            app:layout_constraintStart_toStartOf="@+id/customLoading"
+            app:layout_constraintTop_toTopOf="@+id/customLoading" />
+
+        <com.side.project.customrecyclerview.customView.XRecyclerViewLoading
+            android:id="@+id/customLoading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:chainUseRtl="true"
+            app:layout_constraintBottom_toBottomOf="@+id/group"
+            app:layout_constraintEnd_toStartOf="@+id/group"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="放開更新" />
+            app:layout_constraintTop_toTopOf="@+id/group" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvStateTime"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:gravity="center"
-            app:layout_constraintEnd_toEndOf="@+id/tvState"
-            app:layout_constraintStart_toStartOf="@+id/tvState"
-            app:layout_constraintTop_toBottomOf="@+id/tvState"
-            tools:text="上次更新時間：2023/02/07" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/customLoading"
+            app:layout_constraintTop_toTopOf="parent">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="放開更新" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvStateTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="@+id/tvState"
+                app:layout_constraintStart_toStartOf="@+id/tvState"
+                app:layout_constraintTop_toBottomOf="@+id/tvState"
+                tools:text="上次更新時間：2023/02/07" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

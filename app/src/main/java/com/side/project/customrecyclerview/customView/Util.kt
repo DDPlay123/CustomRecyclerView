@@ -19,13 +19,6 @@ enum class XRecyclerViewState {
 }
 
 /**
- * Item類型
- */
-enum class ItemType {
-    ITEM_TYPE_HEADER, ITEM_TYPE_CONTENT, ITEM_TYPE_BOTTOM, ITEM_TYPE_HEADER_VIEW, ITEM_TYPE_FOOT_VIEW
-}
-
-/**
  * 各時間單位的豪秒值，用於判斷上次更新
  */
 const val ONE_MINUTE: Long = 60 * 1000

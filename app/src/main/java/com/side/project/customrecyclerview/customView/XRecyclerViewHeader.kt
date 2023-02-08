@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
-import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.datastore.core.DataStore
@@ -22,10 +22,11 @@ import kotlinx.coroutines.runBlocking
 /**
  * Create by 光廷 on 2023/02/07
  * 功能：XRecyclerView 頂部，一般用於刷新資料。
+ * 來源：https://github.com/limxing/LFRecyclerView-Android
  */
 class XRecyclerViewHeader(context: Context, attrs: AttributeSet?) :
     ConstraintLayout(context, attrs) {
-    val binding = XRecyclerViewHeaderBinding.inflate(LayoutInflater.from(context), this, true)
+    private val binding = XRecyclerViewHeaderBinding.inflate(LayoutInflater.from(context), this, true)
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = KEY_DATASTORE)
 
     // 刷新狀態
@@ -53,6 +54,8 @@ class XRecyclerViewHeader(context: Context, attrs: AttributeSet?) :
         mRotateDownAnim.duration = ROTATE_ANIM_DURATION.toLong()
         mRotateDownAnim.fillAfter = true
     }
+
+    fun getContent(): RelativeLayout = binding.content
 
     fun getTvState(): TextView = binding.tvState
 
@@ -114,7 +117,7 @@ class XRecyclerViewHeader(context: Context, attrs: AttributeSet?) :
     }
 
     fun setVisibleHeight(h: Int) {
-        val lp = binding.root.layoutParams as LinearLayout.LayoutParams
+        val lp = binding.root.layoutParams as LayoutParams
         lp.height = if (h < 0) 0 else h
         binding.root.layoutParams = lp
     }
@@ -133,13 +136,13 @@ class XRecyclerViewHeader(context: Context, attrs: AttributeSet?) :
         val timeIntoFormat: Long
         val updateAtValue: String
 
-        if (lastUpdateTime == -1L) {
+        if (lastUpdateTime == -1L)
             updateAtValue = context.getString(R.string.hint_not_updated_yet)
-        } else if (timePassed < 0) {
+        else if (timePassed < 0)
             updateAtValue = context.getString(R.string.hint_time_error)
-        } else if (timePassed < ONE_MINUTE) {
+        else if (timePassed < ONE_MINUTE)
             updateAtValue = context.getString(R.string.hint_updated_just_now)
-        } else if (timePassed < ONE_HOUR) {
+        else if (timePassed < ONE_HOUR) {
             timeIntoFormat = timePassed / ONE_MINUTE
             val value = timeIntoFormat.toString() + context.getString(R.string.minute)
             updateAtValue = String.format(context.getString(R.string.hint_updated_at), value)

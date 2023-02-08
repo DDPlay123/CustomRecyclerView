@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.side.project.customrecyclerview.R
 import com.side.project.customrecyclerview.databinding.XRecyclerViewFooterBinding
@@ -13,6 +14,7 @@ import com.side.project.customrecyclerview.databinding.XRecyclerViewFooterBindin
 /**
  * Create by 光廷 on 2023/02/07
  * 功能：XRecyclerView 底部，一般用於載入更多資料。
+ * 來源：https://github.com/limxing/LFRecyclerView-Android
  */
 class XRecyclerViewFooter(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
     private val binding = XRecyclerViewFooterBinding.inflate(LayoutInflater.from(context), this, true)
@@ -43,6 +45,8 @@ class XRecyclerViewFooter(context: Context, attrs: AttributeSet?) : ConstraintLa
         mRotateDownAnim.fillAfter = true
     }
 
+    fun getTvState(): TextView = binding.tvState
+
     fun setState(state: XRecyclerViewState) {
         if (state == mState) return
 
@@ -63,7 +67,7 @@ class XRecyclerViewFooter(context: Context, attrs: AttributeSet?) : ConstraintLa
 
         when (state) {
             XRecyclerViewState.STATE_NORMAL -> binding.apply {
-                imgArrow.setImageResource(R.drawable.ic_arrow_bottom)
+                imgArrow.setImageResource(R.drawable.ic_arrow_top)
 
                 if (mState == XRecyclerViewState.STATE_READY)
                     imgArrow.animation = mRotateUpAnim
@@ -99,13 +103,27 @@ class XRecyclerViewFooter(context: Context, attrs: AttributeSet?) : ConstraintLa
     }
 
     fun setBottomMargin(h: Int) {
-        val lp = binding.root.layoutParams as LinearLayout.LayoutParams
+        val lp = binding.root.layoutParams as LayoutParams
         lp.height = if (h < 0) 0 else h
         binding.root.layoutParams = lp
     }
 
     fun getBottomMargin(): Int {
-        val lp = binding.root.layoutParams as LinearLayout.LayoutParams
+        val lp = binding.root.layoutParams as LayoutParams
         return lp.bottomMargin
+    }
+
+    fun setNoneDataState(isNone: Boolean) {
+        binding.apply {
+            if (isNone) {
+                imgArrow.visible()
+                customLoading.visible()
+                tvState.visible()
+            } else {
+                imgArrow.gone()
+                customLoading.gone()
+                tvState.gone()
+            }
+        }
     }
 }
