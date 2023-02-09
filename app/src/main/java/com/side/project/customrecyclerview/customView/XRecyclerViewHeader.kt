@@ -18,6 +18,8 @@ import com.side.project.customrecyclerview.visible
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Create by 光廷 on 2023/02/07
@@ -135,28 +137,18 @@ class XRecyclerViewHeader(context: Context, attrs: AttributeSet?) : ConstraintLa
 
         if (timePassed < 0)
             updateAtValue = context.getString(R.string.hint_time_error)
-        else if (timePassed < ONE_MINUTE)
-            updateAtValue = context.getString(R.string.hint_updated_just_now)
-        else if (timePassed < ONE_HOUR) {
-            timeIntoFormat = timePassed / ONE_MINUTE
-            val value = timeIntoFormat.toString() + context.getString(R.string.minute)
-            updateAtValue = String.format(context.getString(R.string.hint_updated_at), value)
-        } else if (timePassed < ONE_DAY) {
-            timeIntoFormat = timePassed / ONE_HOUR
-            val value = timeIntoFormat.toString() + context.getString(R.string.hour)
-            updateAtValue = String.format(context.getString(R.string.hint_updated_at), value)
-        } else if (timePassed < ONE_MONTH) {
-            timeIntoFormat = timePassed / ONE_DAY
-            val value = timeIntoFormat.toString() + context.getString(R.string.day)
-            updateAtValue = String.format(context.getString(R.string.hint_updated_at), value)
+        else if (timePassed < ONE_DAY) {
+            val simpleDate = SimpleDateFormat("hh:mm", Locale.getDefault())
+            val date = "${context.getString(R.string.today)} ${simpleDate.format(Date(lastUpdateTime))}"
+            updateAtValue = String.format(context.getString(R.string.header_last_time), date)
         } else if (timePassed < ONE_YEAR) {
-            timeIntoFormat = timePassed / ONE_MONTH
-            val value = timeIntoFormat.toString() + context.getString(R.string.month)
-            updateAtValue = String.format(context.getString(R.string.hint_updated_at), value)
+            val simpleDate = SimpleDateFormat("MM/dd hh:mm", Locale.getDefault())
+            val date = simpleDate.format(Date(lastUpdateTime))
+            updateAtValue = String.format(context.getString(R.string.header_last_time), date)
         } else {
-            timeIntoFormat = timePassed / ONE_YEAR
-            val value = timeIntoFormat.toString() + context.getString(R.string.year)
-            updateAtValue = String.format(context.getString(R.string.hint_updated_at), value)
+            val simpleDate = SimpleDateFormat("yyyy/MM/dd hh:mm", Locale.getDefault())
+            val date = simpleDate.format(Date(lastUpdateTime))
+            updateAtValue = String.format(context.getString(R.string.header_last_time), date)
         }
 
         binding.tvStateTime.text = updateAtValue
