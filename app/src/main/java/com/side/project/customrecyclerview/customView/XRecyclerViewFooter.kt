@@ -94,13 +94,7 @@ class XRecyclerViewFooter(context: Context, attrs: AttributeSet?) : ConstraintLa
                 tvState.text = context.getText(R.string.footer_hint_loading)
             }
 
-            XRecyclerViewState.STATE_SUCCESS -> binding.apply {
-                tvState.text = context.getText(R.string.footer_hint_success)
-            }
-
-            XRecyclerViewState.STATE_FAILED -> binding.apply {
-                tvState.text = context.getText(R.string.footer_hint_failed)
-            }
+            else -> Unit
         }
 
         mState = state

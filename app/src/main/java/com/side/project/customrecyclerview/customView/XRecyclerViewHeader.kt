@@ -133,9 +133,7 @@ class XRecyclerViewHeader(context: Context, attrs: AttributeSet?) : ConstraintLa
         val timeIntoFormat: Long
         val updateAtValue: String
 
-        if (lastUpdateTime == -1L)
-            updateAtValue = context.getString(R.string.hint_not_updated_yet)
-        else if (timePassed < 0)
+        if (timePassed < 0)
             updateAtValue = context.getString(R.string.hint_time_error)
         else if (timePassed < ONE_MINUTE)
             updateAtValue = context.getString(R.string.hint_updated_just_now)
@@ -174,7 +172,7 @@ class XRecyclerViewHeader(context: Context, attrs: AttributeSet?) : ConstraintLa
     // 取得更新時間
     private fun getUpdateTime(): Long = runBlocking {
         return@runBlocking context.dataStore.data.map {
-            it[longPreferencesKey(UPDATE_TIME)] ?: -1L
+            it[longPreferencesKey(UPDATE_TIME)] ?: System.currentTimeMillis()
         }.first()
     }
 }
