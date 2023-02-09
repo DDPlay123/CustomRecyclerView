@@ -38,6 +38,12 @@ class XRecyclerViewFooter(context: Context, attrs: AttributeSet?) : ConstraintLa
     constructor(context: Context) : this(context, null)
 
     init {
+        binding.apply {
+            tvState.text = context.getString(R.string.footer_hint_normal)
+            imgArrow.visible()
+            pb.invisible()
+        }
+
         mRotateUpAnim.duration = ROTATE_ANIM_DURATION.toLong()
         mRotateUpAnim.fillAfter = true
 

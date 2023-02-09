@@ -197,7 +197,7 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
             recyclerViewHeader.postDelayed({
                 mPullRefreshing = false
                 resetHeaderHeight()
-            }, 1000)
+            }, 500)
         }
     }
 
