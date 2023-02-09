@@ -132,23 +132,20 @@ class XRecyclerViewHeader(context: Context, attrs: AttributeSet?) : ConstraintLa
         // 比較時間
         val timePassed = currentTime - lastUpdateTime
 
-        val timeIntoFormat: Long
-        val updateAtValue: String
-
-        if (timePassed < 0)
-            updateAtValue = context.getString(R.string.hint_time_error)
+        val updateAtValue: String = if (timePassed < 0)
+            context.getString(R.string.hint_time_error)
         else if (timePassed < ONE_DAY) {
             val simpleDate = SimpleDateFormat("hh:mm", Locale.getDefault())
             val date = "${context.getString(R.string.today)} ${simpleDate.format(Date(lastUpdateTime))}"
-            updateAtValue = String.format(context.getString(R.string.header_last_time), date)
+            String.format(context.getString(R.string.header_last_time), date)
         } else if (timePassed < ONE_YEAR) {
             val simpleDate = SimpleDateFormat("MM/dd hh:mm", Locale.getDefault())
             val date = simpleDate.format(Date(lastUpdateTime))
-            updateAtValue = String.format(context.getString(R.string.header_last_time), date)
+            String.format(context.getString(R.string.header_last_time), date)
         } else {
             val simpleDate = SimpleDateFormat("yyyy/MM/dd hh:mm", Locale.getDefault())
             val date = simpleDate.format(Date(lastUpdateTime))
-            updateAtValue = String.format(context.getString(R.string.header_last_time), date)
+            String.format(context.getString(R.string.header_last_time), date)
         }
 
         binding.tvStateTime.text = updateAtValue

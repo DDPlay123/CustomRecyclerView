@@ -12,7 +12,6 @@
     <string name="footer_hint_ready">放開加載</string>
     <string name="footer_hint_loading">正在加載</string>
 
-    <string name="hint_updated_just_now">剛剛更新</string>
     <string name="hint_time_error">時間錯誤</string>
 
     <string name="today">今天</string>
