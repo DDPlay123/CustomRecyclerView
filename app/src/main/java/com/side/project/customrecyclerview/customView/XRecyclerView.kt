@@ -106,7 +106,7 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
 
         mAdapter.setLoadMore(isLoadMore)
         mAdapter.setRefresh(isRefresh)
-        mAdapter.setOnItemClickListener(itemListener ?: return)
+        itemListener?.let { mAdapter.setOnItemClickListener(it) }
 
         super.setAdapter(mAdapter)
     }
