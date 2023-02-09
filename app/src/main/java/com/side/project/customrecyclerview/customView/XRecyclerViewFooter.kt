@@ -5,11 +5,11 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.side.project.customrecyclerview.R
 import com.side.project.customrecyclerview.databinding.XRecyclerViewFooterBinding
+import com.side.project.customrecyclerview.invisible
+import com.side.project.customrecyclerview.visible
 
 /**
  * Create by 光廷 on 2023/02/07
@@ -45,23 +45,21 @@ class XRecyclerViewFooter(context: Context, attrs: AttributeSet?) : ConstraintLa
         mRotateDownAnim.fillAfter = true
     }
 
-    fun getTvState(): TextView = binding.tvState
-
     fun setState(state: XRecyclerViewState) {
         if (state == mState) return
 
         if (state == XRecyclerViewState.STATE_REFRESHING) {
-            // 顯示HUD
+            // 顯示Loading
             binding.apply {
                 imgArrow.clearAnimation()
                 imgArrow.invisible()
-                customLoading.visible()
+                pb.visible()
             }
         } else {
             // 顯示箭頭
             binding.apply {
                 imgArrow.visible()
-                customLoading.invisible()
+                pb.invisible()
             }
         }
 
@@ -70,7 +68,7 @@ class XRecyclerViewFooter(context: Context, attrs: AttributeSet?) : ConstraintLa
                 imgArrow.setImageResource(R.drawable.ic_arrow_top)
 
                 if (mState == XRecyclerViewState.STATE_READY)
-                    imgArrow.animation = mRotateUpAnim
+                    imgArrow.animation = mRotateDownAnim
                 if (mState == XRecyclerViewState.STATE_REFRESHING)
                     imgArrow.clearAnimation()
 
@@ -80,7 +78,7 @@ class XRecyclerViewFooter(context: Context, attrs: AttributeSet?) : ConstraintLa
             XRecyclerViewState.STATE_READY -> binding.apply {
                 if (mState != XRecyclerViewState.STATE_READY) {
                     imgArrow.clearAnimation()
-                    imgArrow.startAnimation(mRotateDownAnim)
+                    imgArrow.startAnimation(mRotateUpAnim)
 
                     tvState.text = context.getString(R.string.footer_hint_ready)
                 }
@@ -103,27 +101,18 @@ class XRecyclerViewFooter(context: Context, attrs: AttributeSet?) : ConstraintLa
     }
 
     fun setBottomMargin(h: Int) {
-        val lp = binding.root.layoutParams as LayoutParams
-        lp.height = if (h < 0) 0 else h
-        binding.root.layoutParams = lp
+        if (h < 0) return
+        val lp = binding.content.layoutParams as LayoutParams
+        lp.bottomMargin = h
+        binding.content.layoutParams = lp
     }
 
     fun getBottomMargin(): Int {
-        val lp = binding.root.layoutParams as LayoutParams
+        val lp = binding.content.layoutParams as LayoutParams
         return lp.bottomMargin
     }
 
-    fun setNoneDataState(isNone: Boolean) {
-        binding.apply {
-            if (isNone) {
-                imgArrow.visible()
-                customLoading.visible()
-                tvState.visible()
-            } else {
-                imgArrow.gone()
-                customLoading.gone()
-                tvState.gone()
-            }
-        }
-    }
+    fun hide() { binding.content.visibility = GONE }
+
+    fun show() { binding.content.visibility = VISIBLE }
 }

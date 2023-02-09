@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.animation.DecelerateInterpolator
 import android.widget.Scroller
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.ceil
@@ -62,7 +63,7 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
 
         recyclerViewHeader.viewTreeObserver?.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                mHeaderViewHeight = recyclerViewHeader.getContent().height
+                mHeaderViewHeight = recyclerViewHeader.getContentHeight()
                 viewTreeObserver.removeGlobalOnLayoutListener(this)
             }
         })
@@ -77,6 +78,12 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
             }
         })
         observer = XAdapterDataObserve()
+        // 調整顯示Header
+        resetHeaderHeight()
+    }
+
+    override fun setItemAnimator(animator: ItemAnimator?) {
+        super.setItemAnimator(DefaultItemAnimator())
     }
 
     override fun setLayoutManager(layout: LayoutManager?) {
@@ -125,15 +132,16 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
 
         when (ev.action) {
             MotionEvent.ACTION_DOWN -> mLastY = ev.rawY
+
             MotionEvent.ACTION_MOVE -> {
                 val moveY = ev.rawY - mLastY
                 mLastY = ev.rawY
-                if (isRefresh && !mPullLoad && mLayoutManager.findFirstVisibleItemPosition() <= 1 &&
-                    (recyclerViewHeader.getVisibleHeight() > 0 || moveY > 0))
+                if (isRefresh && !mPullLoad && mLayoutManager.findFirstVisibleItemPosition() <= 1 && (recyclerViewHeader.getVisibleHeight() > 0 || moveY > 0))
                     updateHeaderHeight(moveY / OFFSET_RADIO)
                 else if (isLoadMore && !mPullRefreshing && !mPullLoad && mLayoutManager.findLastVisibleItemPosition() == mAdapter.itemCount - 1 && (recyclerViewFooter.getBottomMargin() > 0 || moveY < 0) && adapter.itemCount > 0)
                     updateFooterHeight(-moveY / OFFSET_RADIO)
             }
+
             MotionEvent.ACTION_UP -> {
                 mLastY = -1F // reset
                 if (!mPullRefreshing && mLayoutManager.findFirstVisibleItemPosition() == 0) {
@@ -181,18 +189,15 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
 
     fun stopRefresh(isSuccess: Boolean) {
         if (mPullRefreshing) {
-            var de: Long = 1000
             if (isSuccess)
                 recyclerViewHeader.setState(XRecyclerViewState.STATE_SUCCESS)
-            else {
+            else
                 recyclerViewHeader.setState(XRecyclerViewState.STATE_FAILED)
-                de = 2000
-            }
 
             recyclerViewHeader.postDelayed({
                 mPullRefreshing = false
                 resetHeaderHeight()
-            }, de)
+            }, 1000)
         }
     }
 
@@ -238,6 +243,8 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
 
     fun setLoadMore(b: Boolean) {
         isLoadMore = b
+        if (isLoadMore) recyclerViewFooter.show()
+        else recyclerViewFooter.hide()
     }
 
     fun setRefresh(b: Boolean) {
@@ -276,6 +283,15 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
         scrollerListener?.onRecyclerViewScrollChange(view, i, i1)
     }
 
+    /**
+     * 重新定義"監聽事件"
+     */
+    interface OnItemClickListener {
+        fun onClick(position: Int)
+
+        fun onLongClick(position: Int)
+    }
+
     interface XRecyclerViewListener {
         fun onRefresh()
         fun onLoadMore()
@@ -285,6 +301,9 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
         fun onRecyclerViewScrollChange(view: View?, i: Int, i1: Int)
     }
 
+    /**
+     * 觀察Adapter更新變化，再根據Header、Footer調整
+     */
     inner class XAdapterDataObserve : AdapterDataObserver() {
         override fun onChanged() {
             mAdapter.notifyDataSetChanged()

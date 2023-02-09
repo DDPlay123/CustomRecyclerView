@@ -5,8 +5,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
-import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -15,6 +13,8 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.side.project.customrecyclerview.R
 import com.side.project.customrecyclerview.databinding.XRecyclerViewHeaderBinding
+import com.side.project.customrecyclerview.invisible
+import com.side.project.customrecyclerview.visible
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
@@ -24,8 +24,7 @@ import kotlinx.coroutines.runBlocking
  * 功能：XRecyclerView 頂部，一般用於刷新資料。
  * 來源：https://github.com/limxing/LFRecyclerView-Android
  */
-class XRecyclerViewHeader(context: Context, attrs: AttributeSet?) :
-    ConstraintLayout(context, attrs) {
+class XRecyclerViewHeader(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
     private val binding = XRecyclerViewHeaderBinding.inflate(LayoutInflater.from(context), this, true)
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = KEY_DATASTORE)
 
@@ -55,25 +54,23 @@ class XRecyclerViewHeader(context: Context, attrs: AttributeSet?) :
         mRotateDownAnim.fillAfter = true
     }
 
-    fun getContent(): RelativeLayout = binding.content
-
-    fun getTvState(): TextView = binding.tvState
+    fun getContentHeight(): Int = binding.content.height
 
     fun setState(state: XRecyclerViewState) {
         if (state == mState) return
 
         if (state == XRecyclerViewState.STATE_REFRESHING) {
-            // 顯示HUD
+            // 顯示Loading
             binding.apply {
                 imgArrow.clearAnimation()
                 imgArrow.invisible()
-                customLoading.visible()
+                pb.visible()
             }
         } else {
             // 顯示箭頭
             binding.apply {
                 imgArrow.visible()
-                customLoading.invisible()
+                pb.invisible()
             }
         }
 
@@ -117,12 +114,12 @@ class XRecyclerViewHeader(context: Context, attrs: AttributeSet?) :
     }
 
     fun setVisibleHeight(h: Int) {
-        val lp = binding.root.layoutParams as LayoutParams
+        val lp = binding.content.layoutParams as LayoutParams
         lp.height = if (h < 0) 0 else h
-        binding.root.layoutParams = lp
+        binding.content.layoutParams = lp
     }
 
-    fun getVisibleHeight(): Int = binding.root.layoutParams.height
+    fun getVisibleHeight(): Int = binding.content.layoutParams.height
 
     // 顯示上次更新的文字描述
     fun refreshUpdatedAtValue() {

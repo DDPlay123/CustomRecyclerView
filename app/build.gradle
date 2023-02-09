@@ -49,5 +49,16 @@ dependencies {
     // DataStore (https://developer.android.com/topic/libraries/architecture/datastore)
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
-//    implementation 'com.github.limxing:LFRecyclerView-Android:1.0.5'
+    // Retrofit & Gson (https://square.github.io/retrofit/)
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation "com.squareup.okhttp3:logging-interceptor:4.8.0" // 用於攔截API
+
+    // Coil (https://coil-kt.github.io/coil/)
+    implementation "io.coil-kt:coil:2.2.2"
+    implementation "io.coil-kt:coil-base:2.2.2"
+
+    // Lifecycle
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
 }

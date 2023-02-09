@@ -3,39 +3,56 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="10dp">
+    android:layout_height="wrap_content">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/imgArrow"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:background="@drawable/ic_arrow_top"
-        app:layout_constraintBottom_toBottomOf="@+id/customLoading"
-        app:layout_constraintEnd_toEndOf="@+id/customLoading"
-        app:layout_constraintStart_toStartOf="@+id/customLoading"
-        app:layout_constraintTop_toTopOf="@+id/customLoading" />
-
-    <com.side.project.customrecyclerview.customView.XRecyclerViewLoading
-        android:id="@+id/customLoading"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:chainUseRtl="true"
-        app:layout_constraintBottom_toBottomOf="@+id/tvState"
-        app:layout_constraintEnd_toStartOf="@+id/tvState"
-        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvState" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvState"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/customLoading"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="放開加載" />
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imgArrow"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/ic_arrow_top"
+                app:layout_constraintBottom_toBottomOf="@+id/pb"
+                app:layout_constraintEnd_toEndOf="@+id/pb"
+                app:layout_constraintStart_toStartOf="@+id/pb"
+                app:layout_constraintTop_toTopOf="@+id/pb" />
+
+            <ProgressBar
+                android:id="@+id/pb"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/tvState"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toStartOf="@+id/tvState"
+                app:layout_constraintHorizontal_bias=".8"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvState" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="放開加載" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
