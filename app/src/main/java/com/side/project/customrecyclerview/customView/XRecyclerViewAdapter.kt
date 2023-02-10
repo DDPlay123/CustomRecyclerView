@@ -12,9 +12,8 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
  */
 class XRecyclerViewAdapter(private val adapter: RecyclerView.Adapter<ViewHolder>) : RecyclerView.Adapter<ViewHolder>() {
     companion object {
-        const val ITEM_TYPE_HEADER = 0
-        const val ITEM_TYPE_CONTENT = 1
-        const val ITEM_TYPE_BOTTOM = 2
+        const val ITEM_TYPE_HEADER = 1000
+        const val ITEM_TYPE_BOTTOM = 1001
     }
 
     var mHeaderCount: Int = 1
@@ -50,14 +49,12 @@ class XRecyclerViewAdapter(private val adapter: RecyclerView.Adapter<ViewHolder>
         isLoadMore = loadMore
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return when (viewType) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+        when (viewType) {
             ITEM_TYPE_HEADER -> HeaderBottomHolder(recyclerViewHeader)
-            ITEM_TYPE_CONTENT -> adapter.onCreateViewHolder(parent, viewType)
             ITEM_TYPE_BOTTOM -> HeaderBottomHolder(recyclerViewFooter)
             else -> adapter.onCreateViewHolder(parent, viewType)
         }
-    }
 
     override fun getItemCount(): Int {
         var count = adapter.itemCount
@@ -68,7 +65,7 @@ class XRecyclerViewAdapter(private val adapter: RecyclerView.Adapter<ViewHolder>
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (isHeaderView(position) || isBottomView(position)) return
 
-        val po: Int = position - mHeaderCount // 扣掉Header
+        val po: Int = position - mHeaderCount // 扣掉 Header
         adapter.onBindViewHolder(holder, po)
 
         if (itemHeight == 0)
@@ -83,19 +80,18 @@ class XRecyclerViewAdapter(private val adapter: RecyclerView.Adapter<ViewHolder>
         }
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return if (isHeaderView(position) && isRefresh)
+    override fun getItemViewType(position: Int): Int =
+        if (isHeaderView(position) && isRefresh)
             ITEM_TYPE_HEADER
         else if (isBottomView(position))
             ITEM_TYPE_BOTTOM
         else
-            ITEM_TYPE_CONTENT
-    }
+            adapter.getItemViewType(position)
 
-    // 判斷當前item是否是HeadView
+    // 判斷當前 item 是否是 HeadView
     private fun isHeaderView(position: Int): Boolean = mHeaderCount != 0 && position < mBottomCount
 
-    // 判斷當前item是否是FooterView
+    // 判斷當前 item 是否是 FooterView
     private fun isBottomView(position: Int): Boolean = mBottomCount != 0 && position >= (mHeaderCount + adapter.itemCount)
 
     inner class HeaderBottomHolder(itemView: View) : ViewHolder(itemView)

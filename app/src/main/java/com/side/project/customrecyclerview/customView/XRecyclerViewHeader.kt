@@ -23,31 +23,27 @@ import java.util.*
 
 /**
  * Create by 光廷 on 2023/02/07
- * 功能：XRecyclerView 頂部，一般用於刷新資料。
+ * 功能：XRecyclerView 頂部，一般用於顯示刷新狀態。
  * 來源：https://github.com/limxing/LFRecyclerView-Android
  */
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = KEY_DATASTORE)
+
 class XRecyclerViewHeader(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
+
+    constructor(context: Context) : this(context, null)
+
     private val binding = XRecyclerViewHeaderBinding.inflate(LayoutInflater.from(context), this, true)
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = KEY_DATASTORE)
 
     // 刷新狀態
     private var mState: XRecyclerViewState = XRecyclerViewState.STATE_NORMAL
 
     // 箭頭動畫
-    private var mRotateUpAnim: Animation = RotateAnimation(
-        0.0f, -180.0f,
-        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
-        0.5f
-    )
+    private var mRotateUpAnim: Animation = RotateAnimation(0.0f, -180.0f,
+        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+    private var mRotateDownAnim: Animation = RotateAnimation(-180.0f, 0.0f,
+        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
 
-    private var mRotateDownAnim: Animation = RotateAnimation(
-        -180.0f, 0.0f,
-        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
-        0.5f
-    )
-
-    constructor(context: Context) : this(context, null)
-
+    // 初始化
     init {
         mRotateUpAnim.duration = ROTATE_ANIM_DURATION.toLong()
         mRotateUpAnim.fillAfter = true

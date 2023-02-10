@@ -13,30 +13,25 @@ import com.side.project.customrecyclerview.visible
 
 /**
  * Create by 光廷 on 2023/02/07
- * 功能：XRecyclerView 底部，一般用於載入更多資料。
+ * 功能：XRecyclerView 底部，一般用於顯示載入狀態。
  * 來源：https://github.com/limxing/LFRecyclerView-Android
  */
 class XRecyclerViewFooter(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
+
+    constructor(context: Context) : this(context, null)
+
     private val binding = XRecyclerViewFooterBinding.inflate(LayoutInflater.from(context), this, true)
 
     // 加載狀態
     private var mState: XRecyclerViewState = XRecyclerViewState.STATE_NORMAL
 
     // 箭頭動畫
-    private var mRotateUpAnim: Animation = RotateAnimation(
-        0.0f, -180.0f,
-        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
-        0.5f
-    )
+    private var mRotateUpAnim: Animation = RotateAnimation(0.0f, -180.0f,
+        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+    private var mRotateDownAnim: Animation = RotateAnimation(-180.0f, 0.0f,
+        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
 
-    private var mRotateDownAnim: Animation = RotateAnimation(
-        -180.0f, 0.0f,
-        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
-        0.5f
-    )
-
-    constructor(context: Context) : this(context, null)
-
+    // 初始化
     init {
         binding.apply {
             tvState.text = context.getString(R.string.footer_hint_normal)
@@ -115,4 +110,12 @@ class XRecyclerViewFooter(context: Context, attrs: AttributeSet?) : ConstraintLa
     fun hide() { binding.content.visibility = GONE }
 
     fun show() { binding.content.visibility = VISIBLE }
+
+    fun setNoMoreData() {
+        binding.apply {
+            imgArrow.invisible()
+            pb.invisible()
+            tvState.text = context.getString(R.string.footer_hint_no_more)
+        }
+    }
 }

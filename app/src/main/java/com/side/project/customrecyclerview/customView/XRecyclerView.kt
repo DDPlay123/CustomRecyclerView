@@ -4,18 +4,31 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.view.ViewTreeObserver
 import android.view.animation.DecelerateInterpolator
 import android.widget.Scroller
 import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.ceil
 
 /**
  * Create by 光廷 on 2023/02/07
- * 功能：XRecyclerView 本體，繼承RecyclerView。
+ * 功能：XRecyclerView 本體，可上滑刷新、下滑更新。
  * 來源：https://github.com/limxing/LFRecyclerView-Android
+ *
+ * 註：
+ * 1. 使用 XRecyclerView 不須再定義 LayoutManager
+ * 2. 目前只能使用垂直頁面。
+ *
+ * 使用姿勢：
+ * 1. 初始化 RecyclerView 時，要先定義
+ *    => setAutoLoadMore()、setLoadMore()、setRefresh()
+ * 2. 當資料回傳時，要主動呼叫
+ *    => stopRefresh() 或 stopLoadMore()
+ *
+ * (options). 如果有需要，可以繼承 Interface
+ *    => OnItemClickListener、XRecyclerViewListener、XRecyclerViewScrollChange
  */
 class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(context, attrs) {
     companion object {
@@ -28,7 +41,7 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
 
     constructor(context: Context) : this(context, null)
 
-    private lateinit var mLayoutManager: GridLayoutManager
+    private lateinit var mLayoutManager: LinearLayoutManager
 
     private var mScroller: Scroller
     private lateinit var mAdapter: XRecyclerViewAdapter
@@ -56,20 +69,25 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
     private lateinit var adapter: Adapter<*>
     private var observer: XAdapterDataObserve? = null
 
+    private var currentLastNum = 0
+    private var num = 0
+
+    // 初始化
     init {
         mScroller = Scroller(context, DecelerateInterpolator())
         recyclerViewHeader = XRecyclerViewHeader(context)
         recyclerViewFooter = XRecyclerViewFooter(context)
 
-        recyclerViewHeader.viewTreeObserver?.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+        recyclerViewHeader.viewTreeObserver?.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 mHeaderViewHeight = recyclerViewHeader.getContentHeight()
                 viewTreeObserver.removeGlobalOnLayoutListener(this)
             }
         })
 
-        val gridLayoutManager = GridLayoutManager(context, 1)
-        layoutManager = gridLayoutManager
+        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        layoutManager = linearLayoutManager
 
         addOnScrollListener(object : OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -82,15 +100,102 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
         resetHeaderHeight()
     }
 
+    /**
+     * 可調用方法
+     * 註：為維護方便，之後如有新功能，請添加在此處。
+     */
+    // 設定是否開啟自動載入更多功能。預設是False
+    fun setAutoLoadMore(autoLoadMore: Boolean) {
+        isAutoLoadMore = autoLoadMore
+    }
+
+    // 定義是否開啟刷新更多功能。預設是True
+    fun setRefresh(b: Boolean) {
+        isRefresh = b
+    }
+
+    // 定義是否開啟載入更多功能。預設是True
+    fun setLoadMore(b: Boolean) {
+        isLoadMore = b
+        if (isLoadMore) recyclerViewFooter.show()
+        else recyclerViewFooter.hide()
+    }
+
+    // 強制停止全部刷新/加載。
+    fun stopAll() {
+        stopRefresh()
+        stopLoadMore()
+    }
+
+    // 當資料回傳時，需主動停止刷新。
+    fun stopRefresh(isSuccess: Boolean = true) {
+        if (mPullRefreshing) {
+            if (isSuccess)
+                recyclerViewHeader.setState(XRecyclerViewState.STATE_SUCCESS)
+            else
+                recyclerViewHeader.setState(XRecyclerViewState.STATE_FAILED)
+
+            recyclerViewHeader.postDelayed({
+                mPullRefreshing = false
+                resetHeaderHeight()
+            }, 500)
+        }
+    }
+
+    // 當資料回傳時，需主動停止呼叫更多資料。
+    fun stopLoadMore() {
+        if (mPullLoading) {
+            mPullLoad = false
+            mPullLoading = false
+            recyclerViewFooter.setState(XRecyclerViewState.STATE_NORMAL)
+            resetFooterHeight()
+        }
+    }
+
+    // 當沒有更多資料時，可調用此方法
+    fun setNoMoreData() {
+        isLoadMore = true
+        recyclerViewFooter.setNoMoreData()
+    }
+
+    fun getMyLayoutManager(): LinearLayoutManager =
+        mLayoutManager
+
+    // 滾動到指定位置
+    fun scrollToPositionWithOffset(pos: Int, bias: Int) {
+        mLayoutManager.scrollToPositionWithOffset(pos, bias)
+    }
+
+    fun setOnItemClickListener(itemListener: OnItemClickListener) {
+        this.itemListener = itemListener
+    }
+
+    fun setXRecyclerViewListener(l: XRecyclerViewListener) {
+        mRecyclerViewListener = l
+    }
+
+    fun setScrollChangeListener(listener: XRecyclerViewScrollChange) {
+        scrollerListener = listener
+    }
+
+    /**
+     * 使用預設 Item 動畫
+     */
     override fun setItemAnimator(animator: ItemAnimator?) {
         super.setItemAnimator(DefaultItemAnimator())
     }
 
+    /**
+     * 由於此處已定義 LayoutManager，所以實際使用時，不須再定義一次。
+     */
     override fun setLayoutManager(layout: LayoutManager?) {
         super.setLayoutManager(layout)
-        mLayoutManager = layout as GridLayoutManager
+        mLayoutManager = layout as LinearLayoutManager
     }
 
+    /**
+     * 調整 Adapter 及定義 XRecyclerViewAdapter 基本功能。
+     */
     override fun setAdapter(adapter: Adapter<*>?) {
         if (adapter == null) return
 
@@ -111,6 +216,9 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
         super.setAdapter(mAdapter)
     }
 
+    /**
+     * 計算滾動用以調整 Header 和 Footer
+     */
     override fun computeScroll() {
         if (mScroller.computeScrollOffset()) {
             if (mScrollBack == SCROLL_BACK_HEADER)
@@ -123,6 +231,9 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
         super.computeScroll()
     }
 
+    /**
+     * Item事件處理
+     */
     override fun onTouchEvent(ev: MotionEvent): Boolean {
         if (mLastY == -1F || mLastY == 0F) {
             mLastY = ev.rawY
@@ -164,6 +275,9 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
         return super.onTouchEvent(ev)
     }
 
+    /**
+     * 處理 Header 高度
+     */
     private fun updateHeaderHeight(delta: Float) {
         recyclerViewHeader.setVisibleHeight(delta.toInt() + recyclerViewHeader.getVisibleHeight())
         if (isRefresh && !mPullRefreshing) {
@@ -187,20 +301,9 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
         invalidate()
     }
 
-    fun stopRefresh(isSuccess: Boolean) {
-        if (mPullRefreshing) {
-            if (isSuccess)
-                recyclerViewHeader.setState(XRecyclerViewState.STATE_SUCCESS)
-            else
-                recyclerViewHeader.setState(XRecyclerViewState.STATE_FAILED)
-
-            recyclerViewHeader.postDelayed({
-                mPullRefreshing = false
-                resetHeaderHeight()
-            }, 500)
-        }
-    }
-
+    /**
+     * 處理 Footer 高度
+     */
     private fun updateFooterHeight(delta: Float) {
         val height = recyclerViewFooter.getBottomMargin() + delta.toInt()
         if (isLoadMore) {
@@ -225,6 +328,9 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
         }
     }
 
+    /**
+     * 其他
+     */
     private fun startLoadMore() {
         if (mRecyclerViewListener != null) {
             recyclerViewFooter.setState(XRecyclerViewState.STATE_REFRESHING)
@@ -232,45 +338,7 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
         }
     }
 
-    fun stopLoadMore() {
-        if (mPullLoading) {
-            mPullLoad = false
-            mPullLoading = false
-            recyclerViewFooter.setState(XRecyclerViewState.STATE_NORMAL)
-            resetFooterHeight()
-        }
-    }
-
-    fun setLoadMore(b: Boolean) {
-        isLoadMore = b
-        if (isLoadMore) recyclerViewFooter.show()
-        else recyclerViewFooter.hide()
-    }
-
-    fun setRefresh(b: Boolean) {
-        isRefresh = b
-    }
-
-    fun setOnItemClickListener(itemListener: OnItemClickListener) {
-        this.itemListener = itemListener
-    }
-
-    fun setXRecyclerViewListener(l: XRecyclerViewListener) {
-        mRecyclerViewListener = l
-    }
-
-    fun setScrollChangeListener(listener: XRecyclerViewScrollChange) {
-        scrollerListener = listener
-    }
-
-    fun setAutoLoadMore(autoLoadMore: Boolean) {
-        isAutoLoadMore = autoLoadMore
-    }
-
-    private var currentLastNum = 0
-    private var num = 0
-
-    fun onScrollChange(view: View?, i: Int, i1: Int) {
+    private fun onScrollChange(view: View?, i: Int, i1: Int) {
         if (mAdapter.itemHeight > 0 && num == 0)
             num = ceil((height / mAdapter.itemHeight).toDouble()).toInt()
 
@@ -284,7 +352,7 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
     }
 
     /**
-     * 重新定義"監聽事件"
+     * 重新定義 監聽事件
      */
     interface OnItemClickListener {
         fun onClick(position: Int)

@@ -11,6 +11,7 @@
     <string name="footer_hint_normal">上拉加載</string>
     <string name="footer_hint_ready">放開加載</string>
     <string name="footer_hint_loading">正在加載</string>
+    <string name="footer_hint_no_more">沒有更多資料</string>
 
     <string name="hint_time_error">時間錯誤</string>
 

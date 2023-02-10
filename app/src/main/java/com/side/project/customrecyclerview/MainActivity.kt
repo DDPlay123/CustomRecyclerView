@@ -73,9 +73,15 @@ class MainActivity : AppCompatActivity(), XRecyclerView.OnItemClickListener, XRe
                     observeData.collect { pair ->
                         if (!::mainAdapter.isInitialized) return@collect
                         val list = mainAdapter.currentList.toMutableList()
+
                         if (pair.first)
                             list.clear()
+
                         list.addAll(pair.second.items)
+
+                        if (pair.first)
+                            list.shuffle()
+
                         mainAdapter.submitList(list)
                     }
                 }
