@@ -3,6 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+group='com.github.DDPlay123'
+
 android {
     namespace 'mai.ddplay.xrecyclerview'
     compileSdk 33
