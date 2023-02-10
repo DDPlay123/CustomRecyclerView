@@ -1,16 +1,15 @@
-package com.side.project.customrecyclerview.customView
+package mai.ddplay.xrecyclerview
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 
 /**
  * Create by 光廷 on 2023/02/07
  * 功能：XRecyclerView Adapter，主要用於調整 Header 和 Footer Item。
  * 來源：https://github.com/limxing/LFRecyclerView-Android
  */
-class XRecyclerViewAdapter(private val adapter: RecyclerView.Adapter<ViewHolder>) : RecyclerView.Adapter<ViewHolder>() {
+class XRecyclerViewAdapter(private val adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         const val ITEM_TYPE_HEADER = 1000
         const val ITEM_TYPE_BOTTOM = 1001
@@ -49,7 +48,7 @@ class XRecyclerViewAdapter(private val adapter: RecyclerView.Adapter<ViewHolder>
         isLoadMore = loadMore
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
             ITEM_TYPE_HEADER -> HeaderBottomHolder(recyclerViewHeader)
             ITEM_TYPE_BOTTOM -> HeaderBottomHolder(recyclerViewFooter)
@@ -62,7 +61,7 @@ class XRecyclerViewAdapter(private val adapter: RecyclerView.Adapter<ViewHolder>
         return count
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (isHeaderView(position) || isBottomView(position)) return
 
         val po: Int = position - mHeaderCount // 扣掉 Header
@@ -94,5 +93,5 @@ class XRecyclerViewAdapter(private val adapter: RecyclerView.Adapter<ViewHolder>
     // 判斷當前 item 是否是 FooterView
     private fun isBottomView(position: Int): Boolean = mBottomCount != 0 && position >= (mHeaderCount + adapter.itemCount)
 
-    inner class HeaderBottomHolder(itemView: View) : ViewHolder(itemView)
+    inner class HeaderBottomHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }

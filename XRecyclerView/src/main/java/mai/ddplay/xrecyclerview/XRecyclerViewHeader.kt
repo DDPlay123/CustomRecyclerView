@@ -1,4 +1,4 @@
-package com.side.project.customrecyclerview.customView
+package mai.ddplay.xrecyclerview
 
 import android.content.Context
 import android.util.AttributeSet
@@ -11,13 +11,10 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.side.project.customrecyclerview.R
-import com.side.project.customrecyclerview.databinding.XRecyclerViewHeaderBinding
-import com.side.project.customrecyclerview.invisible
-import com.side.project.customrecyclerview.visible
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
+import mai.ddplay.xrecyclerview.databinding.XRecyclerViewHeaderBinding
 import java.text.SimpleDateFormat
 import java.util.*
 

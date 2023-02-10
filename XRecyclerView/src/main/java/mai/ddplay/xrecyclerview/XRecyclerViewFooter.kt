@@ -1,4 +1,4 @@
-package com.side.project.customrecyclerview.customView
+package mai.ddplay.xrecyclerview
 
 import android.content.Context
 import android.util.AttributeSet
@@ -6,10 +6,8 @@ import android.view.LayoutInflater
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.side.project.customrecyclerview.R
-import com.side.project.customrecyclerview.databinding.XRecyclerViewFooterBinding
-import com.side.project.customrecyclerview.invisible
-import com.side.project.customrecyclerview.visible
+import mai.ddplay.xrecyclerview.databinding.XRecyclerViewFooterBinding
+import java.util.*
 
 /**
  * Create by 光廷 on 2023/02/07

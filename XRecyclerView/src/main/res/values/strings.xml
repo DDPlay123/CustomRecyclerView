@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CustomRecyclerView</string>
+
+    <string name="header_hint_normal">Refresh</string>
+    <string name="header_hint_ready">Refresh</string>
+    <string name="header_hint_loading">Refreshing\.\.\.</string>
+    <string name="header_last_time">Latest update:%1$s</string>
+    <string name="header_hint_success">Update completed</string>
+    <string name="header_hint_failed">Update failed</string>
+
+    <string name="footer_hint_normal">Load more</string>
+    <string name="footer_hint_ready">Load more</string>
+    <string name="footer_hint_loading">Loading</string>
+    <string name="footer_hint_no_more">No more data</string>
+
+    <string name="hint_time_error">Time error</string>
+
+    <string name="today">Today</string>
+</resources>

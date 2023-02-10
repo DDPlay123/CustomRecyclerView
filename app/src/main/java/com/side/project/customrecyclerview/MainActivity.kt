@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.side.project.customrecyclerview.customView.XRecyclerView
+import mai.ddplay.xrecyclerview.XRecyclerView
 import com.side.project.customrecyclerview.data.Image
 import com.side.project.customrecyclerview.databinding.ActivityMainBinding
 import com.side.project.customrecyclerview.network.ApiClient

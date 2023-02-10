@@ -1,4 +1,6 @@
-package com.side.project.customrecyclerview.customView
+package mai.ddplay.xrecyclerview
+
+import android.view.View
 
 /**
  * 上拉、下滑狀態
@@ -27,3 +29,12 @@ const val KEY_DATASTORE = "KEY_DATASTORE"
 const val UPDATE_TIME = "UPDATE_TIME"
 
 const val ROTATE_ANIM_DURATION = 180
+
+/**
+ * 擴充函數
+ */
+fun View.visible() { this.visibility = View.VISIBLE }
+
+fun View.invisible() { this.visibility = View.INVISIBLE }
+
+fun View.gone() { this.visibility = View.GONE }

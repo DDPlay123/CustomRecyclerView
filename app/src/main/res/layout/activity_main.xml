@@ -7,7 +7,7 @@
     android:background="@color/white"
     tools:context=".MainActivity">
 
-    <com.side.project.customrecyclerview.customView.XRecyclerView
+    <mai.ddplay.xrecyclerview.XRecyclerView
         android:id="@+id/recycleView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

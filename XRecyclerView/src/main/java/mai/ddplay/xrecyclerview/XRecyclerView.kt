@@ -1,4 +1,4 @@
-package com.side.project.customrecyclerview.customView
+package mai.ddplay.xrecyclerview
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.DecelerateInterpolator
 import android.widget.Scroller
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.ceil
@@ -102,7 +101,6 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
 
     /**
      * 可調用方法
-     * 註：為維護方便，之後如有新功能，請添加在此處。
      */
     // 設定是否開啟自動載入更多功能。預設是False
     fun setAutoLoadMore(autoLoadMore: Boolean) {
@@ -122,8 +120,8 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
     }
 
     // 強制停止全部刷新/加載。
-    fun stopAll() {
-        stopRefresh()
+    fun stopAll(isSuccess: Boolean = true) {
+        stopRefresh(isSuccess)
         stopLoadMore()
     }
 
@@ -176,13 +174,6 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
 
     fun setScrollChangeListener(listener: XRecyclerViewScrollChange) {
         scrollerListener = listener
-    }
-
-    /**
-     * 使用預設 Item 動畫
-     */
-    override fun setItemAnimator(animator: ItemAnimator?) {
-        super.setItemAnimator(DefaultItemAnimator())
     }
 
     /**

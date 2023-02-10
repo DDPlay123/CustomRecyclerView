@@ -1,19 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CustomRecyclerView</string>
-
-    <string name="header_hint_normal">下拉刷新</string>
-    <string name="header_hint_ready">放開更新</string>
-    <string name="header_hint_loading">正在更新</string>
-    <string name="header_last_time">最後更新：%1$s</string>
-    <string name="header_hint_success">更新成功</string>
-    <string name="header_hint_failed">更新失敗</string>
-
-    <string name="footer_hint_normal">上拉加載</string>
-    <string name="footer_hint_ready">放開加載</string>
-    <string name="footer_hint_loading">正在加載</string>
-    <string name="footer_hint_no_more">沒有更多資料</string>
-
-    <string name="hint_time_error">時間錯誤</string>
-
-    <string name="today">今天</string>
 </resources>
