@@ -3,20 +3,23 @@ package com.side.project.customrecyclerview
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import mai.ddplay.xrecyclerview.XRecyclerView
 import com.side.project.customrecyclerview.data.Image
 import com.side.project.customrecyclerview.databinding.ActivityMainBinding
+import com.side.project.customrecyclerview.databinding.FooterViewBinding
+import com.side.project.customrecyclerview.databinding.HeaderViewBinding
 import com.side.project.customrecyclerview.network.ApiClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import mai.ddplay.xrecyclerview.XRecyclerView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -52,6 +55,14 @@ class MainActivity : AppCompatActivity(), XRecyclerView.OnItemClickListener, XRe
             setRefresh(true)
             // 到底後，可自動加載：預設 False
             setAutoLoadMore(false)
+            // 設定 HeaderView
+            val headerView = HeaderViewBinding.inflate(LayoutInflater.from(this@MainActivity))
+            headerView.root.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            setHeaderView(headerView.root)
+            // 設定 FooterView
+            val footerView = FooterViewBinding.inflate(LayoutInflater.from(this@MainActivity))
+            footerView.root.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            setFooterView(footerView.root)
             // Item 點擊事件處理
             setOnItemClickListener(this@MainActivity)
             // 設定 Refresh 和 LoadMore 事件

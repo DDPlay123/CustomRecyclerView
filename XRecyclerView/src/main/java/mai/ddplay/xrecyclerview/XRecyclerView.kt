@@ -71,6 +71,10 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
     private var currentLastNum = 0
     private var num = 0
 
+    // HeadView / FooterView
+    private var headerView: View? = null
+    private var footerView: View? = null
+
     // 初始化
     init {
         mScroller = Scroller(context, DecelerateInterpolator())
@@ -120,8 +124,8 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
     }
 
     // 強制停止全部刷新/加載。
-    fun stopAll(isSuccess: Boolean = true) {
-        stopRefresh(isSuccess)
+    fun stopAll() {
+        stopRefresh()
         stopLoadMore()
     }
 
@@ -164,6 +168,26 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
         mLayoutManager.scrollToPositionWithOffset(pos, bias)
     }
 
+    // 第一個顯示的位置
+    fun findFirstVisibleItemPosition() = mLayoutManager.findFirstVisibleItemPosition()
+
+    // 最後一個顯示位置
+    fun findLastVisibleItemPosition() = mLayoutManager.findLastVisibleItemPosition()
+
+    // 設定 HeaderView
+    fun setHeaderView(headerView: View) {
+        this.headerView = headerView
+        if (::mAdapter.isInitialized)
+            mAdapter.setHeaderView(headerView)
+    }
+
+    // 設定 FooterView
+    fun setFooterView(footerView: View) {
+        this.footerView = footerView
+        if (::mAdapter.isInitialized)
+            mAdapter.setFooterView(footerView)
+    }
+
     fun setOnItemClickListener(itemListener: OnItemClickListener) {
         this.itemListener = itemListener
     }
@@ -175,6 +199,13 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
     fun setScrollChangeListener(listener: XRecyclerViewScrollChange) {
         scrollerListener = listener
     }
+
+    /**
+     * 使用預設 Item 動畫
+     */
+//    override fun setItemAnimator(animator: ItemAnimator?) {
+//        super.setItemAnimator(DefaultItemAnimator())
+//    }
 
     /**
      * 由於此處已定義 LayoutManager，所以實際使用時，不須再定義一次。
@@ -199,6 +230,9 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
         mAdapter = XRecyclerViewAdapter(adapter as Adapter<ViewHolder>)
         mAdapter.setRecyclerViewHeader(recyclerViewHeader)
         mAdapter.setRecyclerViewFooter(recyclerViewFooter)
+
+        headerView?.let { mAdapter.setHeaderView(it) }
+        footerView?.let { mAdapter.setFooterView(it) }
 
         mAdapter.setLoadMore(isLoadMore)
         mAdapter.setRefresh(isRefresh)
@@ -281,10 +315,10 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
 
     private fun resetHeaderHeight() {
         val height: Int = recyclerViewHeader.getVisibleHeight()
-        if (height == 0 || mPullRefreshing && height <= mHeaderViewHeight) return
+        if (height == 0 || (mPullRefreshing && height <= mHeaderViewHeight)) return
 
         var finalHeight = 0
-        if (mPullRefreshing)
+        if (mPullRefreshing && height > mHeaderViewHeight)
             finalHeight = mHeaderViewHeight
 
         mScrollBack = SCROLL_BACK_HEADER
@@ -373,19 +407,19 @@ class XRecyclerView(context: Context, attrs: AttributeSet?) : RecyclerView(conte
         }
 
         override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
-            mAdapter.notifyItemRangeChanged(positionStart + mAdapter.mHeaderCount, itemCount, payload)
+            mAdapter.notifyItemRangeChanged(positionStart + mAdapter.getHeaderViewCount(), itemCount, payload)
         }
 
         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-            mAdapter.notifyItemRangeInserted(positionStart + mAdapter.mHeaderCount, itemCount)
+            mAdapter.notifyItemRangeInserted(positionStart + mAdapter.getHeaderViewCount(), itemCount)
         }
 
         override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
-            mAdapter.notifyItemRangeRemoved(positionStart + mAdapter.mHeaderCount, itemCount)
+            mAdapter.notifyItemRangeRemoved(positionStart + mAdapter.getHeaderViewCount(), itemCount)
         }
 
         override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
-            mAdapter.notifyItemMoved(fromPosition + mAdapter.mHeaderCount, toPosition + mAdapter.mHeaderCount)
+            mAdapter.notifyItemMoved(fromPosition + mAdapter.getHeaderViewCount(), toPosition + mAdapter.getHeaderViewCount())
         }
     }
 }
